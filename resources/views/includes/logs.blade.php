@@ -9,16 +9,16 @@
                 </div>
             </div>
             <div class="col-md-7 d-flex align-items-center">
-                <p class="m-0">{!! \Helper::log_beautifier($log->data) !!}</p>
+                <p class="m-0">{!! $log->beautify !!}</p>
             </div>
             <div class="col-md-2 d-flex align-items-center">
                 <i style="font-size: 1rem;" class="fa fa-lg fa-{{$log->user_id > 0 ? 'user' : ($log->user_id == 0 ? 'cog' : 'user-o')}} ps-2 pe-2 text-center text-dark text-dark " aria-hidden="true"></i>
-                <p class="m-0">{{$log->user ? $log->user->name.' '.$log->user->last_name : ($log->user_id == 0 ? __('message.systemic') : ($log->user_id == -1 ? __('message.customer') : ''))}}</p>
+                <p class="m-0">{{$log->user ? $log->user->full_name : ($log->user_id == 0 ? __('message.systemic') : ($log->user_id == -1 ? __('message.customer') : ''))}}</p>
             </div>
             <div class="col-md-2 d-flex align-items-center">
                 <i style="font-size: 1rem;" class="fa fa-lg fa-calendar ps-2 pe-2 text-center text-dark text-dark " aria-hidden="true"></i>
                 @php $d = $log->created_at; @endphp
-                <p style="direction: ltr;" class="m-0">{{\Helper::gregorian_to_jalali($d->format('Y'), $d->format('m'), $d->format('d'), '/').' '.$d->format('H:i:s')}}</p>
+                <p style="direction: ltr;" class="m-0">{{gregorian_to_jalali($d->format('Y'), $d->format('m'), $d->format('d'), '/').' '.$d->format('H:i:s')}}</p>
             </div>
         </div>
     </div>
