@@ -15,7 +15,6 @@
                 <i style="font-size: 1rem;" class="fa-solid fa-memo-circle-check ps-2 pe-2 text-center text-dark {{ (Request::is('check_resumes') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
             </div>
             <span class="nav-link-text me-1">{{ __('message.check_resumes') }}</span>
-            <div class="position-absolute end-0" id="check_resumes_notif"></div>
         </a>
       </li>
       <li class="nav-item">
