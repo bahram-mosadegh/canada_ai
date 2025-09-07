@@ -17,23 +17,24 @@ class UserDataTable extends DataTable
     /**
      * Build the DataTable class.
      *
-     * @param QueryBuilder<User> $query Results from query() method.
+     * @param QueryBuilder $query Results from query() method.
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', 'user.action')
-            ->setRowId('id');
+            ->editColumn('role', function (user $user)
+            {
+                return __('message.'.$user->role);
+            })
+            ->addColumn('action', '');
     }
 
     /**
      * Get the query source of dataTable.
-     *
-     * @return QueryBuilder<User>
      */
     public function query(User $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model->newQuery()->select('users.*');
     }
 
     /**
@@ -42,19 +43,70 @@ class UserDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('user-table')
+                    ->setTableId('users-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
-                    ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+                    ->initComplete("function () {
+                        this.api().columns().every(function () {
+                            var column = this;
+                            var input = document.createElement(\"input\");
+                            input.className = 'form-control';
+                            input.placeholder = '".__('message.search')."';
+                            $(input).appendTo($(column.footer()).empty())
+                            .on('keyup', delay(function () {
+                                    column.search($(this).val(), false, false, true).draw();
+                                }, 500));
+                        });
+
+                        this.api().columns(['role:name']).every(function () {
+                            var column = this;
+                            var select = $('<select class=\"form-control\"> <option value=\"\">-- ".__('message.select')." --</option><option value=\"admin\">".__('message.admin')."</option><option value=\"user\">".__('message.user')."</option></select>')
+                                .appendTo($(column.footer()).empty())
+                                .on('change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                });
+                        });
+
+                        this.api().columns(['active:name']).every(function () {
+                            var column = this;
+                            var select = $('<select class=\"form-control\"> <option value=\"\">-- ".__('message.select')." --</option><option value=\"1\">".__('message.active')."</option><option value=\"0\">".__('message.inactive')."</option></select>')
+                                .appendTo($(column.footer()).empty())
+                                .on('change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                });
+                        });
+
+                        this.api().columns(['action:name']).every(function () {
+                            var column = this;
+                            $('<button type=\"button\" class=\"btn btn-outline-secondary w-100\" style=\"margin-bottom: 0px;\">".__('message.clear_filters')."</button>')
+                                .appendTo($(column.footer()).empty())
+                                .on('click', function () {
+                                    location.reload();
+                                });
+                        });
+                    }")
+                    ->dom('lBfrtip')
+                    ->buttons(
+                        Button::make('excel')->attr(['class' => 'btn btn-outline-secondary btn-md']),
+                    )
+                    ->parameters([
+                        'pageLength' => 5,
+                        'lengthMenu' => [
+                            [5, 10, 25, 50, 100, 500],
+                            [5, 10, 25, 50, 100, 500]
+                        ],
+                        'searchDelay' => '500',
+                        'paging' => true,
+                        'searching' => true,
+                        'info' => true,
+                        'responsive' => true,
+                        'language' => [
+                            'url' => url('../assets/data-tables/fa.json')
+                        ],
+                    ])
+                    ->orderBy(0, 'desc');
     }
 
     /**
@@ -63,15 +115,14 @@ class UserDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
-            Column::make('id'),
-            Column::make('add your columns'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
+            Column::make('id')->title(__('message.id'))->className('dt-body-center')->width('1%'),
+            Column::make('name')->title(__('message.name'))->className('dt-body-center')->width('5%'),
+            Column::make('last_name')->title(__('message.last_name'))->className('dt-body-center')->width('5%'),
+            Column::make('email')->title(__('message.email'))->className('dt-body-center')->width('5%'),
+            Column::make('mobile')->title(__('message.mobile'))->className('dt-body-center')->width('5%'),
+            Column::make('role')->title(__('message.role'))->render('\'<button type="button" class="btn bg-gradient-\'+(data == \''.__('message.admin').'\' ? \'info\' : \'secondary\')+\' btn-sm m-0">\'+data+\'</button>\'')->className('dt-body-center')->width('5%'),
+            Column::computed('active')->title(__('message.active'))->render('\'<div class="form-switch ps-0"><input onclick="change_user_status(\'+full.id+\', \'+(data==1?0:1)+\');" class="form-check-input ms-auto" type="checkbox" \'+(data==1?\'checked\':\'\')+\' \'+('.auth()->user()->id.'==full.id ? \'disabled\' : \'\')+\'></div>\'')->className('dt-body-center')->width('1%'),
+            Column::computed('action')->title(__('message.action'))->render('\'<a href="/edit_user/\'+full.id+\'" class="ms-2"><i class="fa fa-pencil text-secondary"></i></a>\'')->className('dt-body-center')->width('1%')->exportable(false),
         ];
     }
 
