@@ -12,7 +12,7 @@
       <li class="nav-item">
         <a class="nav-link position-relative {{ (Request::is('desktop') ? 'active' : '') }}" href="{{ url('desktop') }}">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center ms-2 d-flex align-items-center justify-content-center">
-                <i style="font-size: 1rem;" class="fa-solid fa-memo-circle-check ps-2 pe-2 text-center text-dark {{ (Request::is('desktop') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                <i style="font-size: 1rem;" class="fa-solid fa-wand-magic-sparkles ps-2 pe-2 text-center text-dark {{ (Request::is('desktop') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
             </div>
             <span class="nav-link-text me-1">{{ __('message.desktop') }}</span>
         </a>
