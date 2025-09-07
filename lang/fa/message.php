@@ -71,4 +71,5 @@ return [
     'add_user' => 'افزودن کاربر',
     'edit_user' => 'ویرایش کاربر',
     'errors_occured' => 'خطایی رخ داده است.',
+    'desktop' => 'میز کار',
 ];
