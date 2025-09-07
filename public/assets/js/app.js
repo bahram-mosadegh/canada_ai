@@ -1573,100 +1573,102 @@ function scroll_to_element(element) {
     }
 }
 
-var default_date_picker_config = {
-    "inline": false,
-    "format": "YYYY-MM-DD",
-    "viewMode": "day",
-    "initialValue": false,
-    "minDate": Date.now(),
-    "initialValueType": "persian",
-    "autoClose": true,
-    "position": "auto",
-    "onlyTimePicker": false,
-    "onlySelectOnDate": true,
-    "calendarType": "persian",
-    "inputDelay": "800",
-    "observer": true,
-    "calendar": {
-      "persian": {
+if ($('.date-filter-input').length) {
+    var default_date_picker_config = {
+      "inline": false,
+      "format": "YYYY-MM-DD",
+      "viewMode": "day",
+      "initialValue": false,
+      "minDate": Date.now(),
+      "initialValueType": "persian",
+      "autoClose": true,
+      "position": "auto",
+      "onlyTimePicker": false,
+      "onlySelectOnDate": true,
+      "calendarType": "persian",
+      "inputDelay": "800",
+      "observer": true,
+      "calendar": {
+        "persian": {
+            "locale": "en",
+            "showHint": true,
+            "leapYearMode": "astronomical"
+        },
+        "gregorian": {
           "locale": "en",
-          "showHint": true,
-          "leapYearMode": "astronomical"
+          "showHint": true
+        }
       },
-      "gregorian": {
-        "locale": "en",
-        "showHint": true
-      }
-    },
-    "navigator": {
+      "navigator": {
+        "enabled": true,
+        "scroll": {
+            "enabled": true
+        },
+        "text": {
+            "btnNextText": "<",
+            "btnPrevText": ">"
+        }
+      },
+      "toolbox": {
       "enabled": true,
-      "scroll": {
-          "enabled": true
+      "calendarSwitch": {
+          "enabled": false,
+          "format": "MMMM"
+      },
+      "todayButton": {
+          "enabled": true,
+          "text": {
+          "fa": "امروز",
+          "en": "امروز"
+          }
+      },
+      "submitButton": {
+          "enabled": false,
+          "text": {
+          "fa": "انتخاب",
+          "en": "انتخاب"
+          }
       },
       "text": {
-          "btnNextText": "<",
-          "btnPrevText": ">"
+          "btnToday": "امروز"
       }
-    },
-    "toolbox": {
-    "enabled": true,
-    "calendarSwitch": {
-        "enabled": false,
-        "format": "MMMM"
-    },
-    "todayButton": {
-        "enabled": true,
-        "text": {
-        "fa": "امروز",
-        "en": "امروز"
-        }
-    },
-    "submitButton": {
-        "enabled": false,
-        "text": {
-        "fa": "انتخاب",
-        "en": "انتخاب"
-        }
-    },
-    "text": {
-        "btnToday": "امروز"
-    }
-    },
-    "timePicker": {
-    "enabled": false,
-    "step": 1,
-    "hour": {
-        "enabled": false,
-        "step": null
-    },
-    "minute": {
-        "enabled": false,
-        "step": null
-    },
-    "second": {
-        "enabled": false,
-        "step": null
-    },
-    "meridian": {
-        "enabled": false
-    }
-    },
-    "dayPicker": {
-    "enabled": true,
-    "titleFormat": "YYYY MMMM"
-    },
-    "monthPicker": {
-    "enabled": true,
-    "titleFormat": "YYYY"
-    },
-    "yearPicker": {
-    "enabled": true,
-    "titleFormat": "YYYY"
-    },
-    "responsive": true,
-};
+      },
+      "timePicker": {
+      "enabled": false,
+      "step": 1,
+      "hour": {
+          "enabled": false,
+          "step": null
+      },
+      "minute": {
+          "enabled": false,
+          "step": null
+      },
+      "second": {
+          "enabled": false,
+          "step": null
+      },
+      "meridian": {
+          "enabled": false
+      }
+      },
+      "dayPicker": {
+      "enabled": true,
+      "titleFormat": "YYYY MMMM"
+      },
+      "monthPicker": {
+      "enabled": true,
+      "titleFormat": "YYYY"
+      },
+      "yearPicker": {
+      "enabled": true,
+      "titleFormat": "YYYY"
+      },
+      "responsive": true,
+  };
 
-$('.date-filter-input').persianDatepicker(default_date_picker_config);
+  $('.date-filter-input').persianDatepicker(default_date_picker_config);
+}
 
 function parent_check_box(element, action_classes = []) {
     const isChecked = $(element).find('.parent-check-box').is(':checked');
@@ -1684,7 +1686,6 @@ function child_check_box(action_classes = []) {
       $('.'+item).prop('disabled', !$('.child-check-box:checked').length);
     });
 };
-
 
 $("form").submit(function() {
   $(this).find("button[type='submit']").attr('disabled', true);
@@ -1740,25 +1741,5 @@ if($('#dropzone').length) {
             window.open('/uploads/attachments/'+$(this).text(), "_blank");
         });
     });
-}
-
-if ($("[id$='_notif']").length) {
-  $.get('/notifs', function(data) {
-    if (data.success) {
-      for (var key in data.data) {
-        var notif_html = '<button class="btn bg-gradient-%s p-0 me-2 mt-n2" style="height: 1rem; width: 1rem;">%d</button>';
-        if ($('#'+key).length) {
-          if (data.data[key] > 0) {
-            notif_html = notif_html.replace('%s', 'danger');
-            notif_html = notif_html.replace('%d', data.data[key]);
-          } else {
-            notif_html = notif_html.replace('%s', 'secondary');
-            notif_html = notif_html.replace('%d', 0);
-          }
-          $('#'+key).html(notif_html);
-        }
-      }
-    }
-  });
 }
 
