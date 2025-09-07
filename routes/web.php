@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CaseIntakeController;
+use App\Http\Controllers\InternalApiController;
 
 Route::group(['middleware' => 'auth'], function () {
 
@@ -20,6 +22,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('profile', 'profile');
         Route::post('edit_profile', 'edit_profile');
     });
+
+    Route::get('/desktop', [CaseIntakeController::class, 'show'])->name('intake.show');
 });
 
 Route::group(['middleware' => 'guest'], function () {
@@ -29,3 +33,6 @@ Route::group(['middleware' => 'guest'], function () {
     })->name('login');
     Route::post('/login', [UserController::class, 'login']);
 });
+
+// Internal API (mock) - keep protected if needed; for demo no auth
+Route::get('/internal-api/contract-lookup', [InternalApiController::class, 'contractLookup']);
