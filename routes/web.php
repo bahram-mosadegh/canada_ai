@@ -8,7 +8,7 @@ use App\Http\Controllers\InternalApiController;
 Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/', function () {
-        return redirect('/profile');
+        return redirect('/desktop');
     });
 
     Route::controller(UserController::class)->group(function () {
