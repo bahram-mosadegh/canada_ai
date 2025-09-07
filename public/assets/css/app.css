@@ -492,3 +492,10 @@ table.dataTable tfoot th {
 .font-en {
     font-family: 'IRANSansEn';
 }
+
+.required:after {
+  content: '*';
+  margin-right: 5px;
+  color: red;
+  font-size: 15px;
+}
