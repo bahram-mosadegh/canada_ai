@@ -1,0 +1,75 @@
+<div>
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label">شماره قرارداد</label>
+                <input type="text" class="form-control" wire:model.live.debounce.500ms="contract_number" placeholder="مثل 12345" />
+            </div>
+
+            @if($applicant)
+                <div class="alert alert-info text-white">
+                    <div>نام متقاضی: {{ $applicant_full_name }}</div>
+                    <div>ایمیل: {{ $applicant_email }}</div>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    @if(count($required_documents))
+        <div class="card mb-3">
+            <div class="card-header">مدارک مورد نیاز</div>
+            <div class="card-body">
+                <ul class="list-group">
+                    @foreach($required_documents as $doc)
+                        @php
+                            $has = collect($uploaded_files)->firstWhere('type', $doc);
+                        @endphp
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ $doc }}
+                            <span class="badge bg-{{ $has ? 'success' : 'secondary' }}">
+                                {{ $has ? 'دریافت شد' : 'در انتظار' }}
+                            </span>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
+
+    <div class="card mb-3">
+        <div class="card-header">آپلود مدارک</div>
+        <div class="card-body">
+            <div
+                x-data="{ isOver:false }"
+                x-on:dragover.prevent="isOver=true"
+                x-on:dragleave.prevent="isOver=false"
+                x-on:drop.prevent="isOver=false"
+                class="border border-2 rounded p-4 text-center"
+                :class="{ 'border-primary bg-light': isOver }"
+            >
+                <input type="file" multiple class="form-control mb-2" wire:model="files" />
+                <div>فایل‌ها را اینجا رها کنید یا انتخاب کنید</div>
+            </div>
+
+            @if(count($uploaded_files))
+                <div class="mt-3">
+                    <div class="fw-bold mb-2">فایل‌های آپلود شده</div>
+                    <ul class="list-group">
+                        @foreach($uploaded_files as $file)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>{{ $file['name'] }}</span>
+                                <span class="badge bg-info">{{ $file['type'] }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <div class="text-end">
+        <button class="btn btn-primary" @disabled(!$application_case_id)>ادامه</button>
+    </div>
+</div>
+
+
