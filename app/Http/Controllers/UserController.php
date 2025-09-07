@@ -16,23 +16,25 @@ class UserController extends Controller
 {
     public function index(UserDataTable $dataTable)
     {
-        $permissions = Permission::orderBy('title')->get();
-        return $dataTable->with(compact('permissions'))->render('users', compact('permissions'));
+        Gate::authorize('users');
+        return $dataTable->render('user.index');
     }
 
     public function add_get()
     {
-        $permissions = Permission::orderBy('title')->get();
-        return view('add_user', compact('permissions'));
+        Gate::authorize('users');
+        return view('user.add');
     }
 
     public function add_post()
     {
+        Gate::authorize('users');
+
         $attributes = request()->validate([
             'nilgam_id' => ['nullable', 'integer', Rule::unique('users', 'nilgam_id')],
             'name' => ['required'],
             'last_name' => ['required'],
-            'permission_id' => ['nullable', 'exists:permissions,id'],
+            'role' => ['required', 'in:admin,user'],
             'active' => ['required', 'in:0,1'],
             'email' => ['nullable', 'email', 'max:50', Rule::unique('users', 'email')],
             'mobile' => ['required', 'regex:/^09\d{9}$/', Rule::unique('users', 'mobile')],
@@ -41,8 +43,8 @@ class UserController extends Controller
 
         unset($attributes['password']);
 
-        if (request()->password) {
-            $attributes['password'] = bcrypt(request()->password);
+        if (request()->get('password')) {
+            $attributes['password'] = bcrypt(request()->get('password'));
         }
         
         $user = User::create($attributes);
@@ -61,14 +63,12 @@ class UserController extends Controller
     }
 
     public function edit_get($id) {
-        Gate::authorize('permissions', 'users');
-        $user = User::with([
-            'logs' => fn ($query) => $query->orderBy('created_at', 'desc')
-        ])->find($id);
+        Gate::authorize('users');
+
+        $user = User::with('logs')->find($id);
 
         if ($user) {
-            $permissions = Permission::orderBy('title')->get();
-            return view('edit_user', compact('user', 'permissions'));
+            return view('user.edit', compact('user'));
         }
 
         return redirect('users')->with('error', __('message.user').' '.__('message.not_found'));
@@ -76,7 +76,8 @@ class UserController extends Controller
 
     public function edit_post($id)
     {
-        Gate::authorize('permissions', 'users');
+        Gate::authorize('users');
+
         request()->merge(['id' => $id]);
         $attributes = request()->validate([
             'id' => ['required', 'exists:users,id'],
@@ -105,10 +106,9 @@ class UserController extends Controller
                 if ($key == 'password') {
                     $old_val = '***';
                     $new_val = '***';
-                } elseif ($key == 'permission_id') {
-                    $key = 'permission';
-                    $old_val = $old_val ? $old_user->permission->title : null;
-                    $new_val = $new_val ? Permission::find($new_val)->title : null;
+                } elseif ($key == 'role') {
+                    $old_val = __('message.'.$old_val);
+                    $new_val = __('message.'.$new_val);
                 } elseif ($key == 'active') {
                     $key = 'status';
                     $old_val = __('message.'.($old_val ? 'active' : 'inactive'));
@@ -174,7 +174,8 @@ class UserController extends Controller
 
     public function change_user_status($id, $status = 1)
     {
-        Gate::authorize('permissions', 'users');
+        Gate::authorize('users');
+
         $account = User::find($id);
         if ($account) {
             $type = 'success';
@@ -207,7 +208,7 @@ class UserController extends Controller
 
     public function change_user_permission()
     {
-        Gate::authorize('permissions', 'users');
+        Gate::authorize('users');
         $attributes = request()->validate([
             'id' => ['required', 'exists:users,id'],
             'permission_id' => ['nullable', 'exists:permissions,id'],
@@ -222,7 +223,7 @@ class UserController extends Controller
 
     public function delete($id)
     {
-        Gate::authorize('permissions', 'users');
+        Gate::authorize('users');
         $user = Auth::user();
         if ($user->id == $id) {
             return redirect('/users')->with('error', __('message.failed'));
