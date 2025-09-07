@@ -56,48 +56,11 @@
     </main>
 </div>
 
-<!-- Change User Permission Modal -->
-<div class="modal fade" id="change-user-permission-modal" tabindex="-1" role="dialog" aria-labelledby="change-user-permission-modal-label" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title font-weight-normal" id="change-user-permission-modal-label">{{ __('message.change_user_permission') }} <strong id="user-name"></strong></h5>
-      </div>
-      <div class="modal-body">
-        <form id="change-user-permission-form" action="{{url('change_user_permission')}}" method="POST" role="form">
-        @csrf
-        <input type="hidden" id="user-id" name="id">
-        <div class="row">
-            <div class="form-group">
-                <label for="change-user-permission-select" class="form-control-label">{{ __('message.permission') }}</label>
-                <select id="change-user-permission-select" name="permission_id" class="form-control">
-                    <option value="">-- {{__('message.select')}} --</option>
-                    {!! $permissions->map(fn ($val) => '<option value="'.$val->id.'">'.$val->title.'</option>')->implode('') !!}
-                </select>
-            </div>
-        </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" form="change-user-permission-form" class="btn bg-gradient-primary">{{ __('message.update') }}</button>
-        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">{{ __('message.close') }}</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 {!! $dataTable->scripts() !!}
 
 <script type="text/javascript">
     function change_user_status(id, status){
         window.location.replace("/change_user_status/"+id+"/"+status);
-    }
-
-    function change_user_permission(id, permission, full_name){
-        $('#user-name').text(full_name);
-        $('#user-id').val(id);
-        $('#change-user-permission-select').val(permission);
-        $('#change-user-permission-modal').modal('show');
     }
 </script>
 @endsection
