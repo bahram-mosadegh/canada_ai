@@ -79,4 +79,5 @@ return [
     'all_cases' => 'همه پرونده ها',
     'contract_number' => 'شماره قرارداد',
     'application_type' => 'نوع اپلیکیشن',
+    'continue' => 'ادامه',
 ];
