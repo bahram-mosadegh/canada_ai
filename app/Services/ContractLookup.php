@@ -6,7 +6,7 @@ class ContractLookup
 {
     public function lookup(string $contractNumber): array
     {
-        // Mocked response; replace with real internal API integration.
+        sleep(3);
         return [
             'applicant' => [
                 'full_name' => 'John Doe',
