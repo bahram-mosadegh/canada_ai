@@ -31,7 +31,7 @@
   <link href="{{asset_versioned('assets/css/select2.min.css')}}" rel="stylesheet" />
 </head>
 
-<body class="g-sidenav-show bg-gray-100 rtl ">
+<body class="g-sidenav-show bg-gray-100 rtl" @if(Request::is('desktop')) style="background: url('/assets/img/desktop-bg.jpg') center center/cover;" @endif>
   @auth
     @yield('auth')
   @endauth
