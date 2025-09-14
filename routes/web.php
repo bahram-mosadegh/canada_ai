@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DesktopController;
-use App\Http\Controllers\InternalApiController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CaseController;
 
@@ -47,6 +46,3 @@ Route::group(['middleware' => 'guest'], function () {
     })->name('login');
     Route::post('/login', [UserController::class, 'login']);
 });
-
-// Internal API (mock) - keep protected if needed; for demo no auth
-Route::get('/internal-api/contract-lookup', [InternalApiController::class, 'contractLookup']);
