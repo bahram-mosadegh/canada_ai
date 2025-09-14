@@ -12,15 +12,31 @@
       <li class="nav-item">
         <a class="nav-link position-relative {{ (Request::is('desktop') ? 'active' : '') }}" href="{{ url('desktop') }}">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center ms-2 d-flex align-items-center justify-content-center">
-                <i style="font-size: 1rem;" class="fa-solid fa-wand-magic-sparkles ps-2 pe-2 text-center text-dark {{ (Request::is('desktop') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                <i style="font-size: 1rem;" class="fa fa-wand-magic-sparkles ps-2 pe-2 text-center text-dark {{ (Request::is('desktop') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
             </div>
             <span class="nav-link-text me-1">{{ __('message.desktop') }}</span>
         </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link {{ (Request::is('cases') ? 'active' : '') }}" href="{{ url('cases') }}">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center ms-2 d-flex align-items-center justify-content-center">
+                <i style="font-size: 1rem;" class="fa fa-folder-open ps-2 pe-2 text-center text-dark {{ (Request::is('cases') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+            </div>
+            <span class="nav-link-text me-1">{{ __('message.cases') }}</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ (Request::is('clients') ? 'active' : '') }}" href="{{ url('clients') }}">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center ms-2 d-flex align-items-center justify-content-center">
+                <i style="font-size: 1rem;" class="fa fa-people-group ps-2 pe-2 text-center text-dark {{ (Request::is('clients') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+            </div>
+            <span class="nav-link-text me-1">{{ __('message.clients') }}</span>
+        </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link {{ (Request::is('profile') ? 'active' : '') }}" href="{{ url('profile') }}">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center ms-2 d-flex align-items-center justify-content-center">
-                <i style="font-size: 1rem;" class="fas fa-lg fa-user-circle ps-2 pe-2 text-center text-dark {{ (Request::is('profile') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                <i style="font-size: 1rem;" class="fa fa-user-circle ps-2 pe-2 text-center text-dark {{ (Request::is('profile') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
             </div>
             <span class="nav-link-text me-1">{{ __('message.profile') }}</span>
         </a>
@@ -29,7 +45,7 @@
       <li class="nav-item">
         <a class="nav-link {{ (Request::is('users') ? 'active' : '') }}" href="{{ url('users') }}">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center ms-2 d-flex align-items-center justify-content-center">
-                <i style="font-size: 1rem;" class="fas fa-lg fa-user ps-2 pe-2 text-center text-dark {{ (Request::is('users') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+                <i style="font-size: 1rem;" class="fa fa-user ps-2 pe-2 text-center text-dark {{ (Request::is('users') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
             </div>
             <span class="nav-link-text me-1">{{ __('message.users') }}</span>
         </a>
