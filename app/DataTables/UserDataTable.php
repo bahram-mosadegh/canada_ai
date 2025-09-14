@@ -22,7 +22,7 @@ class UserDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->editColumn('role', function (user $user)
+            ->editColumn('role', function (User $user)
             {
                 return __('message.'.$user->role);
             })
