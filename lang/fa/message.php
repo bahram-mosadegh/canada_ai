@@ -72,4 +72,11 @@ return [
     'edit_user' => 'ویرایش کاربر',
     'errors_occured' => 'خطایی رخ داده است.',
     'desktop' => 'میز کار',
+    'clients' => 'کلاینت ها',
+    'full_name' => 'نام و نام خانوادگی',
+    'all_clients' => 'همه کلاینت ها',
+    'cases' => 'پرونده ها',
+    'all_cases' => 'همه پرونده ها',
+    'contract_number' => 'شماره قرارداد',
+    'application_type' => 'نوع اپلیکیشن',
 ];
