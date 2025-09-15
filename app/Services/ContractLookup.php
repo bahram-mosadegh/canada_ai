@@ -6,7 +6,7 @@ class ContractLookup
 {
     public function lookup(string $contractNumber): array
     {
-        sleep(3);
+        sleep(1);
         return [
             'applicant' => [
                 'full_name' => 'John Doe',
