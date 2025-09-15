@@ -18,7 +18,7 @@
                         handleDrop(e) {
                             this.isOver = false;
                             const dropped = e.dataTransfer?.files;
-                            if (!dropped || dropped.length === 0 || !$wire.applicant) return;
+                            if (!dropped || dropped.length === 0 || !$wire.client_raw) return;
 
                             $wire.uploadMultiple('files', dropped,
                                 () => {}, // success
@@ -30,9 +30,9 @@
                     x-on:dragover.prevent="isOver=true"
                     x-on:dragleave.prevent="isOver=false"
                     x-on:drop.prevent="handleDrop($event)"
-                    class="border border-2 border-radius-lg border-white p-4 text-center {{$applicant ? 'cursor-pointer' : ''}}"
-                    :class="{ 'bg-light': isOver && $wire.applicant }"
-                    onClick="{{$applicant ? "$('#files').click()" : ''}}"
+                    class="border border-2 border-radius-lg border-white p-4 text-center {{$client_raw ? 'cursor-pointer' : ''}}"
+                    :class="{ 'bg-light': isOver && $wire.client_raw }"
+                    onClick="{{$client_raw ? "$('#files').click()" : ''}}"
                 >
                     <div class="text-secondary text-sm">فایل‌ها را اینجا رها کنید یا انتخاب کنید</div>
                 </div>
@@ -89,7 +89,7 @@
                                         >
                                         </div>
                                         <div wire:loading.remove wire:target="contract_number">
-                                            @if($applicant)
+                                            @if($client_raw)
                                                 <div class="text-xs text-bold fade-in">{{$applicant_full_name}}</div>
                                             @endif
                                         </div>
@@ -106,8 +106,8 @@
                                         >
                                         </div>
                                         <div wire:loading.remove wire:target="contract_number">
-                                            @if($applicant)
-                                                <div class="text-xs text-bold fade-in">{{$applicant_email}}</div>
+                                            @if($client_raw)
+                                                <div class="text-xs text-bold fade-in">business</div>
                                             @endif
                                         </div>
                                     </td>
@@ -123,7 +123,7 @@
                                         >
                                         </div>
                                         <div wire:loading.remove wire:target="contract_number">
-                                            @if($applicant)
+                                            @if($client_raw)
                                                 <div class="text-xs text-bold fade-in">{{$applicant_email}}</div>
                                             @endif
                                         </div>
