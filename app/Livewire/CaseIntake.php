@@ -16,7 +16,7 @@ class CaseIntake extends Component
     use WithFileUploads;
 
     public string $contract_number = '';
-    public ?array $applicant = null;
+    public ?array $client_raw = null;
     public array $required_documents = [];
     public ?int $application_case_id = null;
     public ?int $client_id = null;
@@ -29,19 +29,18 @@ class CaseIntake extends Component
     #[Validate('sometimes|email|max:255')]
     public string $applicant_email = '';
 
-    public function updatedContractNumber(ContractLookup $lookup): void
+    public function updatedContractNumber(ContractLookup $contract_lookup): void
     {
         if (trim($this->contract_number) === '') {
-            $this->applicant = null;
+            $this->client_raw = null;
             $this->required_documents = [];
             return;
         }
 
-        $data = $lookup->lookup($this->contract_number);
-        $this->applicant = $data['applicant'] ?? null;
-        $this->applicant_full_name = $this->applicant['full_name'] ?? '';
-        $this->applicant_email = $this->applicant['email'] ?? '';
-        $this->required_documents = $data['required_documents'] ?? [];
+        $this->client_raw = $contract_lookup->lookup($this->contract_number)->getRawData() ?? null;
+        $this->applicant_full_name = $this->client_raw['applicant']['full_name'] ?? '';
+        $this->applicant_email = $this->client_raw['applicant']['email'] ?? '';
+        $this->required_documents = $this->client_raw['required_documents'] ?? [];
     }
 
     public function ensureCase(): void
@@ -49,10 +48,7 @@ class CaseIntake extends Component
         if ($this->application_case_id) {
             return;
         }
-        $client = Client::firstOrCreate(
-            ['email' => $this->applicant_email ?: null],
-            ['full_name' => $this->applicant_full_name ?: 'بدون نام']
-        );
+        $client = (new ContractLookup)->make($this->client_raw)->createClient();
         $this->client_id = $client->id;
 
         $case = ClientCase::create([
