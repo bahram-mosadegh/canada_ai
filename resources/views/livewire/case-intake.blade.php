@@ -37,20 +37,30 @@
                     <div class="text-secondary text-sm">فایل‌ها را اینجا رها کنید یا انتخاب کنید</div>
                 </div>
 
-                @if(count($required_documents))
-                    <div class="mt-4 fade-in d-flex text-sm">
-                        <p class="text-sm mb-2">مدارک مورد نیاز:</p>
-                        @foreach($required_documents as $doc)
-                            @php
-                                $has = collect($uploaded_files)->firstWhere('type', $doc);
-                            @endphp
-                            <div class="me-3">
-                                {{ $doc }}
-                                {!! $has ? '<i class="fa-solid fa-circle-check text-success"></i>' : '<i class="fa-solid fa-circle text-secondary"></i>' !!}
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
+                <div
+                    wire:loading.block
+                    wire:target="contract_number"
+                    style="display: none;"
+                    class="placeholder-wave mt-4"
+                >
+                </div>
+                <div wire:loading.remove wire:target="contract_number">
+                    @if(count($required_documents))
+                        <div class="mt-4 fade-in d-flex text-sm">
+                            <p class="text-sm mb-2">مدارک مورد نیاز:</p>
+                            @foreach($required_documents as $doc)
+                                @php
+                                    $has = collect($uploaded_files)->firstWhere('type', $doc);
+                                @endphp
+                                <div class="me-3">
+                                    {{ $doc }}
+                                    {!! $has ? '<i class="fa-solid fa-circle-check text-success"></i>' : '<i class="fa-solid fa-circle text-secondary"></i>' !!}
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+                
 
                 @if(count($uploaded_files))
                     <hr class="my-4 text-white opacity-10 fade-in">
@@ -60,11 +70,29 @@
                             @foreach($uploaded_files as $file)
                                 <li class="list-group-item d-flex justify-content-between align-items-center p-2 fade-in">
                                     <span class="text-xs">{{ $file['name'] }}</span>
-                                    <span class="badge bg-info">{{ $file['type'] }}</span>
+                                    <div class="d-flex">
+                                        <div style="min-width: 50px;">
+                                            @if($file['status'] == 'analysing')
+                                            <img src="{{asset('assets/img/ai-loading.gif')}}" width="20px" title="{{__('message.analysing')}}">
+                                            @else
+                                            <i class="fa-solid fa-circle text-xs text-{{$file['status'] == 'analysed' ? 'success' : 'secondary'}}" title="{{__('message.'.$file['status'])}}"></i>
+                                            @endif
+                                        </div>
+                                        <div style="min-width: 100px;">
+                                            @if($file['type'])
+                                            <span class="badge bg-info w-100" title="{{__('message.file_type')}}">{{ $file['type'] }}</span>
+                                            @else
+                                            <div class="placeholder-wave" title="{{__('message.file_type')}}"></div>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </li>
                             @endforeach
                         </ul>
                     </div>
+                    @if(collect($uploaded_files)->where('status', '<>', 'analysed')->count())
+                    <div wire:poll.1000ms="checkFileStatus"></div>
+                    @endif
                 @endif
             </div>
         </div>
