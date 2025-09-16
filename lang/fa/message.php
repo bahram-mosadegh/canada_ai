@@ -80,4 +80,8 @@ return [
     'contract_number' => 'شماره قرارداد',
     'application_type' => 'نوع اپلیکیشن',
     'continue' => 'ادامه',
+    'pending' => 'در انتظار',
+    'analysing' => 'در حال آنالیز',
+    'analysed' => 'آنالیز شده',
+    'file_type' => 'نوع فایل',
 ];
