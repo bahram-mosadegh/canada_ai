@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('original_name')->nullable();
             $table->string('mime_type')->nullable();
             $table->string('path')->nullable();
+            $table->string('status')->nullable();
             $table->string('type')->nullable();
             $table->string('ai_model')->nullable();
             $table->string('ai_detected_type')->nullable();
