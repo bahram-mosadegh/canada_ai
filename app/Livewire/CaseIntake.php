@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\ClientCase;
+use App\Jobs\AnalyseFileAI;
 use App\Models\CaseFile;
 use App\Models\Client;
 use App\Services\ContractLookup;
@@ -69,36 +70,43 @@ class CaseIntake extends Component
             }
             $path = $file->store('cases/' . $this->application_case_id, 'public');
 
-            $classification = $this->classifyDocumentAi($file->getClientOriginalName(), $file->getMimeType());
-
-            $record = CaseFile::create([
+            $case_file = CaseFile::create([
                 'case_id' => $this->application_case_id,
                 'original_name' => $file->getClientOriginalName(),
                 'mime_type' => $file->getMimeType(),
-                'path' => $path,
-                'ai_detected_type' => $classification['type'] ?? null,
+                'status' => 'pending',
+                'path' => $path
             ]);
 
+            AnalyseFileAI::dispatch($case_file->id);
+
             $this->uploaded_files[] = [
-                'id' => $record->id,
-                'name' => $record->original_name,
-                'type' => $record->ai_detected_type,
-                'url' => Storage::disk('public')->url($record->path),
+                'id' => $case_file->id,
+                'name' => $case_file->original_name,
+                'type' => null,
+                'status' => 'pending',
+                'url' => Storage::disk('public')->url($case_file->path),
             ];
         }
 
         $this->files = [];
     }
 
-    private function classifyDocumentAi(string $name, ?string $mime): array
+    public function checkFileStatus()
     {
-        // Stub: very naive rules; replace with a real AI API integration.
-        $n = strtolower($name);
-        if (str_contains($n, 'passport')) return ['type' => 'passport', 'confidence' => 0.92];
-        if (str_contains($n, 'bank')) return ['type' => 'bank_statement', 'confidence' => 0.88];
-        if (str_contains($n, 'resume') || str_contains($n, 'cv')) return ['type' => 'resume', 'confidence' => 0.86];
-        if (str_contains($n, 'photo') || str_contains($n, 'picture')) return ['type' => 'photo', 'confidence' => 0.84];
-        return ['type' => 'unknown', 'confidence' => 0.50];
+        if (count($this->uploaded_files)) {
+            $files = CaseFile::whereIn('id', collect($this->uploaded_files)->pluck('id'))->get();
+
+            $uploaded_files = $this->uploaded_files;
+
+            foreach ($uploaded_files as &$uploaded_file) {
+                $db_file = $files->firstWhere('id', $uploaded_file['id']);
+                $uploaded_file['status'] = $db_file->status;
+                $uploaded_file['type'] = $db_file->ai_detected_type;
+            }
+
+            $this->uploaded_files = $uploaded_files;
+        }
     }
 
     public function render()
