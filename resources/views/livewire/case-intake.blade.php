@@ -3,7 +3,7 @@
         <div class="card mb-4" style="background: rgba(255, 255, 255, 0.6);">
             <div class="card-body">
                 <div class="my-3">
-                    <input type="text" class="form-control text-center p-3" autofocus wire:model.live.debounce.500ms="contract_number" placeholder="{{__('message.contract_number')}}" @disabled($application_case_id) />
+                    <input type="text" class="form-control text-center p-3 {{$contract_number && !$contract_lookup_successful ? 'is-invalid' : ''}}" autofocus wire:model.live.debounce.500ms="contract_number" placeholder="{{__('message.contract_number')}}" @disabled($application_case_id) />
                 </div>
             </div>
         </div>
@@ -30,9 +30,9 @@
                     x-on:dragover.prevent="isOver=true"
                     x-on:dragleave.prevent="isOver=false"
                     x-on:drop.prevent="handleDrop($event)"
-                    class="border border-2 border-radius-lg border-white p-4 text-center {{$client_raw ? 'cursor-pointer' : ''}}"
+                    class="border border-2 border-radius-lg border-white p-4 text-center {{$case_raw ? 'cursor-pointer' : ''}}"
                     :class="{ 'bg-light': isOver && $wire.client_raw }"
-                    onClick="{{$client_raw ? "$('#files').click()" : ''}}"
+                    onClick="{{$case_raw ? "$('#files').click()" : ''}}"
                 >
                     <div class="text-secondary text-sm">فایل‌ها را اینجا رها کنید یا انتخاب کنید</div>
                 </div>
@@ -117,8 +117,8 @@
                                         >
                                         </div>
                                         <div wire:loading.remove wire:target="contract_number">
-                                            @if($client_raw)
-                                                <div class="text-xs text-bold fade-in">{{$applicant_full_name}}</div>
+                                            @if($case_raw)
+                                                <div class="text-xs text-bold fade-in">{{implode(' | ', $case_raw['applicant_names'])}}</div>
                                             @endif
                                         </div>
                                     </td>
@@ -134,7 +134,7 @@
                                         >
                                         </div>
                                         <div wire:loading.remove wire:target="contract_number">
-                                            @if($client_raw)
+                                            @if($case_raw)
                                                 <div class="text-xs text-bold fade-in">business</div>
                                             @endif
                                         </div>
@@ -151,7 +151,7 @@
                                         >
                                         </div>
                                         <div wire:loading.remove wire:target="contract_number">
-                                            @if($client_raw)
+                                            @if($case_raw)
                                                 <div class="text-xs text-bold fade-in">{{$applicant_email}}</div>
                                             @endif
                                         </div>
