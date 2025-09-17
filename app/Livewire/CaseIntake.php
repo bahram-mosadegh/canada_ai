@@ -17,31 +17,31 @@ class CaseIntake extends Component
     use WithFileUploads;
 
     public string $contract_number = '';
-    public ?array $client_raw = null;
+    public ?array $contract_raw = null;
+    public ?array $case_raw = null;
+    public bool $contract_lookup_successful = false;
     public array $required_documents = [];
     public ?int $application_case_id = null;
     public ?int $client_id = null;
     public array $uploaded_files = [];
     public array $files = [];
 
-    #[Validate('sometimes|string|max:255')]
-    public string $applicant_full_name = '';
-
-    #[Validate('sometimes|email|max:255')]
-    public string $applicant_email = '';
-
     public function updatedContractNumber(ContractLookup $contract_lookup): void
     {
         if (trim($this->contract_number) === '') {
-            $this->client_raw = null;
+            $this->contract_raw = null;
+            $this->case_raw = null;
             $this->required_documents = [];
             return;
         }
 
-        $this->client_raw = $contract_lookup->lookup($this->contract_number)->getRawData() ?? null;
-        $this->applicant_full_name = $this->client_raw['applicant']['full_name'] ?? '';
-        $this->applicant_email = $this->client_raw['applicant']['email'] ?? '';
-        $this->required_documents = $this->client_raw['required_documents'] ?? [];
+        $contract = $contract_lookup->lookup($this->contract_number);
+
+        $this->contract_lookup_successful = $contract->isSuccessful();
+
+        $this->contract_raw = $contract->getRawData();
+        $this->case_raw = $contract->getRawCase();
+        $this->required_documents = $contract->getRequiredDocuments();
     }
 
     public function ensureCase(): void
@@ -49,7 +49,7 @@ class CaseIntake extends Component
         if ($this->application_case_id) {
             return;
         }
-        $client = (new ContractLookup)->make($this->client_raw)->createClient();
+        $client = (new ContractLookup)->make($this->contract_raw)->createClient();
         $this->client_id = $client->id;
 
         $case = ClientCase::create([
