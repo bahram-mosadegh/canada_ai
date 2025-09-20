@@ -53,7 +53,7 @@
                                     $has = collect($uploaded_files)->firstWhere('type', $doc);
                                 @endphp
                                 <div class="me-3">
-                                    {{ $doc }}
+                                    {{ __('message.'.$doc.'_file') }}
                                     {!! $has ? '<i class="fa-solid fa-circle-check text-success"></i>' : '<i class="fa-solid fa-circle text-secondary"></i>' !!}
                                 </div>
                             @endforeach
@@ -100,66 +100,69 @@
     <div class="col-md-4 mb-4">
         <div class="card mb-3 h-100" style="background: rgba(255, 255, 255, 0.6);">
             <div class="card-body">
-                <p class="text-sm">اطلاعات کلاینت:</p>
-
-                <div class="card" style="background: rgba(255, 255, 255, 0.6);">
+                <p class="text-sm">اطلاعات پرونده:</p>
+                <div
+                    wire:loading.block
+                    wire:target="contract_number"
+                    style="display: none;"
+                >
                     <div class="table-responsive">
                         <table class="table align-items-center mb-0">
                             <tbody>
                                 <tr>
-                                    <td class="text-xs opacity-8 text-bold" width="25%">نام و نام خانوادگی</td>
-                                    <td>
-                                        <div
-                                            wire:loading.block
-                                            wire:target="contract_number"
-                                            style="display: none;"
-                                            class="placeholder-wave w-100 h-100"
-                                        >
-                                        </div>
-                                        <div wire:loading.remove wire:target="contract_number">
-                                            @if($case_raw)
-                                                <div class="text-xs text-bold fade-in">{{implode(' | ', $case_raw['applicant_names'])}}</div>
-                                            @endif
-                                        </div>
-                                    </td>
+                                    <td class="placeholder-wave"></td>
                                 </tr>
                                 <tr>
-                                    <td class="text-xs opacity-8 text-bold">نوع پرونده</td>
-                                    <td>
-                                        <div
-                                            wire:loading.block
-                                            wire:target="contract_number"
-                                            style="display: none;"
-                                            class="placeholder-wave"
-                                        >
-                                        </div>
-                                        <div wire:loading.remove wire:target="contract_number">
-                                            @if($case_raw)
-                                                <div class="text-xs text-bold fade-in">business</div>
-                                            @endif
-                                        </div>
-                                    </td>
+                                    <td class="placeholder-wave"></td>
                                 </tr>
                                 <tr>
-                                    <td class="text-xs opacity-8 text-bold">ایمیل</td>
-                                    <td>
-                                        <div
-                                            wire:loading.block
-                                            wire:target="contract_number"
-                                            style="display: none;"
-                                            class="placeholder-wave"
-                                        >
-                                        </div>
-                                        <div wire:loading.remove wire:target="contract_number">
-                                            @if($case_raw)
-                                                <div class="text-xs text-bold fade-in">{{$applicant_email}}</div>
-                                            @endif
-                                        </div>
-                                    </td>
+                                    <td class="placeholder-wave"></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
+                </div>
+                <div wire:loading.remove wire:target="contract_number">
+                    @if($case_raw)
+                        <div class="table-responsive">
+                            <table class="table align-items-center mb-0">
+                                <tbody>
+                                    <tr class="fade-in">
+                                        <td class="text-xs opacity-8 text-bold">نام و نام خانودگی کلاینت</td>
+                                        <td>
+                                            <div class="text-xs text-bold text-start">{{ $case_raw['client_full_name'] }}</div>
+                                        </td>
+                                    </tr>
+                                    <tr class="fade-in">
+                                        <td class="text-xs opacity-8 text-bold">موبایل کلاینت</td>
+                                        <td>
+                                            <div class="text-xs text-bold text-start">{{ $case_raw['client_mobile'] }}</div>
+                                        </td>
+                                    </tr>
+                                    @foreach($case_raw['applicant_names'] as $applicant_name)
+                                    <tr class="fade-in">
+                                        <td class="text-xs opacity-8 text-bold" width="25%">نام و نام خانوادگی مسافر{{ $loop->count > 1 ? ' '.($loop->index + 1) : '' }}</td>
+                                        <td>
+                                            <div class="text-xs text-bold text-start">{{ $applicant_name }}</div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                    <tr class="fade-in">
+                                        <td class="text-xs opacity-8 text-bold">نوع پرونده</td>
+                                        <td>
+                                            <div class="text-xs text-bold text-start">{{ __('message.'.$case_raw['type_of_visa']) }}</div>
+                                        </td>
+                                    </tr>
+                                    <tr class="fade-in">
+                                        <td class="text-xs opacity-8 text-bold">دارای بیزینس</td>
+                                        <td>
+                                            <div class="text-xs text-bold text-start">{{ $case_raw['is_business'] ? __('message.yes') : __('message.no') }}</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
