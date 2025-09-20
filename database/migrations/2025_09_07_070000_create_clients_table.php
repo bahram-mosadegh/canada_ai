@@ -12,9 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('crm_guid')->nullable();
             $table->string('full_name')->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
-            $table->json('meta')->nullable();
+            $table->string('mobile')->nullable();
             $table->timestamps();
         });
     }
