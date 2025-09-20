@@ -15,6 +15,11 @@ class ClientCase extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'applicant_names' => 'array',
+        'required_documents' => 'array'
+    ];
+
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
