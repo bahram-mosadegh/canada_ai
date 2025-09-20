@@ -22,6 +22,10 @@ class CaseDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
+            ->editColumn('type_of_visa', function (ClientCase $case)
+            {
+                return __('message.'.$case->type_of_visa);
+            })
             ->addColumn('action', '');
     }
 
@@ -93,7 +97,7 @@ class CaseDataTable extends DataTable
         return [
             Column::make('id')->title(__('message.id'))->className('dt-body-center')->width('1%'),
             Column::make('contract_number')->title(__('message.contract_number'))->className('dt-body-center')->width('5%'),
-            Column::make('application_type')->title(__('message.application_type'))->className('dt-body-center')->width('5%'),
+            Column::make('type_of_visa')->title(__('message.type_of_visa'))->className('dt-body-center')->width('5%'),
             Column::make('status')->title(__('message.status'))->className('dt-body-center')->width('5%'),
             Column::computed('action')->title(__('message.action'))->render('\'<a href="/edit_user/\'+full.id+\'" class="ms-2"><i class="fa fa-pencil text-secondary"></i></a>\'')->className('dt-body-center')->width('1%')->exportable(false),
         ];
