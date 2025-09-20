@@ -49,14 +49,9 @@ class CaseIntake extends Component
         if ($this->application_case_id) {
             return;
         }
-        $client = (new ContractLookup)->make($this->contract_raw)->createClient();
-        $this->client_id = $client->id;
 
-        $case = ClientCase::create([
-            'client_id' => $this->client_id,
-            'contract_number' => $this->contract_number,
-            'status' => 'in_progress',
-        ]);
+        $case = (new ContractLookup)->make($this->contract_raw, $this->contract_number)->createCase();
+
         $this->application_case_id = $case->id;
     }
 
